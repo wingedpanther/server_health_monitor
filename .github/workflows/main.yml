@@ -1,0 +1,39 @@
+name: Server Health Monitor 
+
+on:
+  schedule:
+    - cron: '0 * * * *' # Runs every hour. https://crontab.guru/#0_*_*_*_*
+  workflow_dispatch: # To run this workflow manually from the Actions tab
+
+jobs:
+  health_check:
+    runs-on: ubuntu-latest
+
+    steps:
+    - name: Step-1 Check the server status using cURL
+      run: | # curl the server and store the response in STATUS variable to use in the next step. Repo secret in the settings
+        STATUS=$(curl --silent --output /dev/null --write-out "%{http_code}" ${{secrets.SERVER_ADDR}}}) 
+        echo "::set-output name=status::$STATUS"
+      id: health_check
+
+    - name: Step-1 Send mail on failure
+       # Execute the below commands only if the server response http status code is not 200
+      if: steps.health_check.outputs.status != '200'
+      uses: dawidd6/action-send-mail@v3
+      with:
+        server_address: smtp.gmail.com
+        server_port: 465
+        username: ${{secrets.FROM_GMAIL_ADDRESS}} # Repo secret in the settings
+        password: ${{secrets.FROM_GMAIL_APP_PWD}} # Repo secret in the settings
+        subject: ‼️ Action Needed - Server Health Check Failed 
+        to: ${{vars.TO_EMAIL_ADDRESS}} # Repo secret in the settings
+        from: Server Health Monitor 🤖
+        body: | # Email body
+          Health check monitoring has detected a failure at the server: ${{vars.SERVER_ADDR}}
+          Status Code: ${{ steps.health_check.outputs.status }}
+          Please investigate the server immediately. If the issue persists, please check the server logs for any relevant error messages or further diagnose the problem.
+          ---
+          This is an automated message. Please do not reply to this email.
+        secure: true
+        ignore_cert: true
+        priority: high
