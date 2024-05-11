@@ -12,7 +12,7 @@ jobs:
     steps:
     - name: Step-1 Check the server status using cURL
       run: | # curl the server and store the response in STATUS variable to use in the next step. Repo secret in the settings
-        STATUS=$(curl --silent --output /dev/null --write-out "%{http_code}" ${{secrets.SERVER_ADDR}}}) 
+        STATUS=$(curl --silent --output /dev/null --write-out "%{http_code}" ${{secrets.SERVER_ADDR}}) 
         echo "::set-output name=status::$STATUS"
       id: health_check
 
