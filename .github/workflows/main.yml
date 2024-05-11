@@ -26,7 +26,7 @@ jobs:
         username: ${{secrets.FROM_GMAIL_ADDRESS}} # Repo secret in the settings
         password: ${{secrets.FROM_GMAIL_APP_PWD}} # Repo secret in the settings
         subject: ‼️ Action Needed - Server Health Check Failed 
-        to: ${{vars.TO_EMAIL_ADDRESS}} # Repo secret in the settings
+        to: ${{secrets.TO_EMAIL_ADDRESS}} # Repo secret in the settings
         from: Server Health Monitor 🤖
         body: | # Email body
           Health check monitoring has detected a failure at the server: ${{vars.SERVER_ADDR}}
