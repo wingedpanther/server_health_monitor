@@ -29,7 +29,7 @@ jobs:
         to: ${{secrets.TO_EMAIL_ADDRESS}} # Repo secret in the settings
         from: Server Health Monitor 🤖
         body: | # Email body
-          Health check monitoring has detected a failure at the server: ${{vars.SERVER_ADDR}}
+          Health check monitoring has detected a failure at the server: ${{secrets.SERVER_ADDR}}
           Status Code: ${{ steps.health_check.outputs.status }}
           Please investigate the server immediately. If the issue persists, please check the server logs for any relevant error messages or further diagnose the problem.
           ---
